@@ -17,3 +17,7 @@ curl -XPOST localhost:3000
 cp test.wav /tmp/
 curl -F 'data=@/tmp/test.wav' localhost:3000/upload
 ```
+
+## TMP files
+
+Uploads will be stored here: `/tmp/uploads`
