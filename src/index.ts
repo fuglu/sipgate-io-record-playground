@@ -5,27 +5,23 @@ import xml from "xml";
 
 const app = express();
 app.use(urlencoded({ extended: false }));
-app.use(fileUpload());
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/uploads"
+  })
+);
 
-app.post("/", (request, response) => {
-  const from = request.body.from;
-  const to = request.body.to;
-  const direction = request.body.direction;
-
-  console.log("from: " + from);
-  console.log("to: " + to);
-  console.log("direction: " + direction);
-
+app.post("/", ({ headers: { host } }, response) => {
   response.set("Content-Type", "application/xml");
   response.send(
     xml({
       Response: [
-        { Answer: null },
         {
           Record: [
             {
               _attr: {
-                onData: "http://" + request.headers.host + "/upload",
+                onData: `http://${host}/upload`,
                 beep: true,
                 duration: 120000
               }
@@ -37,8 +33,8 @@ app.post("/", (request, response) => {
   );
 });
 
-app.post("/upload", (request, response) => {
-  console.log(request.files);
+app.post("/upload", ({ files }, response) => {
+  console.log(files);
   response.send();
 });
 
